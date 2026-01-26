@@ -1,0 +1,5 @@
+commonAnnotations:
+  foo: bar
+
+image:
+  repository: bitnamilegacy/postgresql

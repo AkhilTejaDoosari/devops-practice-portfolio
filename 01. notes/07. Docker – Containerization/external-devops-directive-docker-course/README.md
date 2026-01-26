@@ -1,31 +1,25 @@
-[History and Motivation](01-history-and-motivation/README.md)
-| [Technology Overview](02-technology-overview/README.md)
-| [Installation and Set Up](03-installation-and-set-up/README.md)
-| [Using 3rd Party Containers](04-using-3rd-party-containers/README.md)
-| [Example Web Application](05-example-web-application/README.md)
-| [Building Container Images](06-building-container-images/README.md)
-| [Container Registries](07-container-registries/README.md)
-| [Running Containers](08-running-containers/README.md)
-| [Container Security](09-container-security/README.md)
-| [Interacting with Docker Objects](10-interacting-with-docker-objects/README.md)
-| [Development Workflows](11-development-workflow/README.md)
-| [Deploying Containers](12-deploying-containers/README.md)
-
----
-
 # DevOps Directive Docker Course
 
 This is the companion repo to: [Complete Docker Course - From BEGINNER to PRO! (Learn Containers)](https://youtu.be/RqTEHSBrYFw)
 
 [![](./readme-assets/thumbnail.jpg)](https://youtu.be/RqTEHSBrYFw)
 
-## Sponsor
+## Table of Contents
 
-[![](./readme-assets/shipyard-logo.png)](https://shipyard.build/)
+01. [History and Motivation](01-history-and-motivation/README.md)  
+02. [Technology Overview](02-technology-overview/README.md)  
+03. [Installation and Set Up](03-installation-and-set-up/README.md)  
+04. [Using 3rd Party Containers](04-using-3rd-party-containers/README.md)  
+05. [Example Web Application](05-example-web-application/README.md)  
+06. [Building Container Images](06-building-container-images/README.md)  
+07. [Container Registries](07-container-registries/README.md)  
+08. [Running Containers](08-running-containers/README.md)  
+09. [Container Security](09-container-security/README.md)  
+10. [Interacting with Docker Objects](10-interacting-with-docker-objects/README.md)  
+11. [Development Workflows](11-development-workflow/README.md)  
+12. [Deploying Containers](12-deploying-containers/README.md)  
 
-Thank you to [Shipyard](https://shipyard.build/) for sponsoring this course! It is because of their support that I am able to provide it to the community free of charge!
-
-Shipyard is the easiest way to generate on demand ephemeral environments (aka a new environment for every pull request). Sign up today at https://shipyard.social/DevOpsDirectivePromo! The first 300 people to use the promo code "DEVOPSDIRECTIVE" will receive an additional 30 days free on either their startup or business tier plans!
+---
 
 ## [01 - History and Motivation](01-history-and-motivation/README.md)
 

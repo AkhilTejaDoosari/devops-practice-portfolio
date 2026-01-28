@@ -24,9 +24,35 @@
 
 ## Linux Building Blocks
 
-Containers leverage linux kernel features cgroups and namespaces to provide resource constraints and application isolation respectively. They also use an union filesystem that enables images to be built upon common layers, making building and sharing images fast and efficient.
+### Process → Namespace → cgroups (Clean Flow)
 
-***Note:*** Docker did not invent containers. For example, LXC containers (https://linuxcontainers.org/) was implemented in 2008, five years before Docker launched. That being said, Docker made huge strides in developer experience, which helped container technologies gain mass adoption and remains one the most popular containerization platforms.
+A **process** is a running program.
+Every application starts as a process on the system.
+By default, a process can see the entire system and use as many resources as it wants.
+
+Linux then introduced **namespaces**.
+A namespace limits what a process can see.
+The process is intentionally made blind to the rest of the system.
+It sees only its own processes, network, files, users, and hostname.
+This creates isolation.
+
+Isolation alone is not enough.
+A process could still consume all CPU or memory.
+
+So Linux added **cgroups**.
+cgroups limit how much CPU, memory, and other resources a process can use.
+These limits are enforced by the kernel.
+
+When a process is started with namespaces and cgroups applied, it becomes what we call a container.
+
+**One-line lock:**
+A container is just a process with restricted view and restricted usge.
+
+---
+
+### Namespaces 
+This table shows the Linux resources that can be isolated using namespaces. This is for reference only.
+![](./readme-assets/namespaces.jpg) 
 
 ---
 
@@ -42,25 +68,21 @@ With cgroups, a container runtime is able to specify that a container should be 
 
 ---
 
-### Namespaces 
-
-A namespace wraps a global system resource in an abstraction that makes it appear to the processes within the namespace that they have their own isolated instance of the global resource. 
-
-Changes to the global resource are visible to other processes that are members of the namespace, but are invisible to other processes.
-
-With namespaces, a container runtime is able to keep processes outside of the container invisible within the container or map the user inside the container to a different user on the host (among other things).
-
-![](./readme-assets/namespaces.jpg) 
-
----
-
 ### Union filesystems
 
-A union filesystem allows files and directories of separate file systems, known as branches, to be transparently overlaid, forming a single coherent file system. 
+Applications need many files. Copying the same files for every app wastes disk space.  
 
-Contents of directories which have the same path within the merged branches will be seen together in a single merged directory, within the new, virtual filesystem.
+A union filesystem lets Linux stack multiple directories and present them as one directory.  
+The directories are not actually merged. Linux only shows a combined view.  
 
-This approach allows for efficient use of space because common layers can be shared. For example, if multiple containers from the same image are created on a single host, the container runtime only has to allocate a thin overlay specific to each container, while the underlying image layers can be shared. More detail on understanding the implications of these filesystem on data persistence can be found in 04-using-3rd-party-containers.
+In Docker, an image is made of read-only directories (layers). Linux stacks these layers and presents them as a single filesystem.  
+
+When a container runs, Docker adds one writable directory on top. All read-only layers are shared and reused, not copied.  
+
+This design avoids duplication, saves disk space, and keeps images lightweight.
+
+**One-line lock:**
+Union filesystem exists to reuse shared read-only files instead of copying them.
 
 ![](./readme-assets/overlayfs.jpg) 
 
@@ -68,27 +90,31 @@ This approach allows for efficient use of space because common layers can be sha
 
 ## Docker Application Architecture
 
-It is useful to break down the various components within the Docker ecosystem. The first distinction to make is between "Docker Desktop" and "Docker Engine".
+Docker is not a single thing. It is made of a core engine, optional developer tooling, and image storage.
 
-Docker Desktop is an application you install on development systems that provides:
-- A client application:
-  - Docker CLI (command line interface for interacting with Docker)
-  - GUI for configuring various system settings
-  - Credential helpers for accessing registries
-  - Extensions (3rd party plugins)
-- A Linux virtual machine containing:
-  - Docker daemon (dockerd), exposing the Docker API
-  - (Optional) Kubernetes cluster
+The core of Docker is Docker Engine. Docker Engine consists of the Docker daemon (dockerd) and the Docker CLI. The daemon does the real work: building images and running containers. The CLI is just the command you type to talk to the daemon using the Docker API. Docker Engine runs only on Linux and is what is used on servers and production systems.
 
-Docker Desktop is free for personal use, but requires a subscription for [certain commercial use cases](https://www.docker.com/pricing/faq/).
+Docker Desktop is a developer convenience, not Docker itself. It bundles the Docker CLI with a graphical interface, credential helpers, extensions, and a Linux virtual machine. This Linux VM runs Docker Engine inside it. Docker Desktop exists because macOS and Windows do not have the Linux kernel features Docker needs. When you use Docker Desktop, you are actually using Docker Engine running inside a Linux VM.
 
-Docker Engine refers to a subset of those component which are free and open source and can be installed only on Linux. Specifically Docker Engine includes:
-- Docker CLI
-- Docker daemon (dockerd), exposing the Docker API
+Container registries are not part of Docker, but they are required to store and share images. Docker can push images to registries and pull images from them. Docker Hub is the default registry, but many others exist. Registries only store images; they do not run containers.
 
-Docker Engine can build container images, run containers from them, and generally do most things that Docker Desktop but is Linux only and doesn't provide all of the developer experience polish that Docker Desktop provides.
-
-Container image registries are not part of Docker itself, but because they are the primary mechanism for storing and sharing container images it is worth including it here. Docker runs a registry named DockerHub, but there are many other registries as well. More info on these can be found in `07-container-registries`.
+**One-line lock:**
+Docker Engine runs containers, Docker Desktop helps developers, and registries store images.
 
 ![](./readme-assets/docker-architecture.jpg) 
 
+- You start on your machine and type a Docker command       →    That command goes to the Docker CLI.
+- The Docker CLI does not do any real work                  →    It only sends your request to the Docker API.
+- The Docker API is handled by the Docker daemon (dockerd)  →    This daemon is where everything actually happens.
+
+The daemon runs inside Linux: 
+- directly on a Linux server  
+- inside a Linux virtual machine when using Docker Desktop on Mac or Windows  
+This Linux environment is **Docker Engine.**
+
+Docker Engine builds images and runs containers. Containers run here as Linux processes using namespaces, cgroups, and union filesystem.  
+If an image is not available locally, Docker Engine pulls it from a registry. Registries only store images. They never run containers.  
+Docker Desktop is just a wrapper. It provides a GUI, helpers, and a Linux VM so Docker Engine can run on non-Linux systems.  
+
+**One-line lock:**
+Command goes in → Docker Engine runs containers → registry stores images.

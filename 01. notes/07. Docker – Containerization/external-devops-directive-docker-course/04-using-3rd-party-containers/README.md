@@ -39,7 +39,55 @@
 
 ## I. Understanding data persistence
 
-When we create a container from a container image, everything in the image is treated as read-only, and there is a new layer overlayed on top that is read/write.
+### Docker Data Lifetime — Core Mental Model
+
+A Docker container uses a layered filesystem.  
+All layers from the image are **read-only**.  
+When the container starts, Docker adds **one writable layer** on top.
+
+Any file written while the container is running goes into that top layer.  
+This layer is **temporary**.
+
+If the container stops and is removed:
+- the writable layer is destroyed  
+- all data written there is lost
+
+This is intentional. Containers are meant to be **replaceable**, not long-living.
+
+### Separation of Responsibilities
+
+**Image** → what must exist *before* the app starts  
+- OS  
+- language runtime  
+- libraries  
+- app code  
+Built at image build time and reused everywhere.
+
+**Container** → a running instance of the image  
+- safe to kill  
+- safe to restart  
+- safe to recreate
+
+**Persistent Data** → anything created at runtime that matters  
+- databases  
+- uploads  
+- logs  
+- cache
+
+Persistent data must live **outside the container** using mounts.
+
+### Mount Types
+
+**Bind Mount**  
+- links a real host folder to a container path  
+- commonly used in development
+
+**Volume**  
+- Docker-managed storage  
+- decoupled from containers  
+- preferred in production
+
+The container **uses** the data, but does not **own** it.
 
 ![](./readme-assets/container-filesystem.jpg)
 

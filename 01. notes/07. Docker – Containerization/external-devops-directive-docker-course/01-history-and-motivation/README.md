@@ -129,7 +129,7 @@ Compared to virtual machines:
 - Apps start almost instantly
 You can run many containers on one machine without wasting resources.
 
-**Simple analogy!**
+**Simple analogy!**  
 Imagine an apartment building. One building, One plumbing system, One power connection
 
 Each apartment:

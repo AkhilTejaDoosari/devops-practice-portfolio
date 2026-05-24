@@ -2,109 +2,129 @@
   <img src="../../assets/cicd-banner.svg" alt="ci-cd" width="100%"/>
 </p>
 
-[← devops-runbook](../../README.md)
+[← devops-journey](../../README.md) | [GHA Fundamentals](./01-ci-layer/01-actions-fundamentals.md) | [GitOps Bridge](./01-ci-layer/02-production-patterns-gitops-bridge.md) | [ArgoCD Setup](./02-cd-layer/00-lab-argocd-setup.md) | [ArgoCD Ops](./02-cd-layer/01-argocd-operations.md) | [Trivy Scan](./03-security-and-tools/01-trivy-container-scanning.md) | [Interview Prep](./99-interview-prep/README.md)
 
 ---
 
-Pipelines, automation, and GitOps — built around the webstore app that you containerized in Docker and orchestrated in Kubernetes.
+Pipelines, automation, and GitOps — built around ShopStack, the app you containerized in Docker and orchestrated in Kubernetes on AWS EC2.
 
 ---
 
-## Why CI-CD — and Why GitHub Actions + ArgoCD
+## Why CI/CD — and Why GitHub Actions + ArgoCD
 
-Every `kubectl apply` you ran in Kubernetes was a manual step. You typed it, you watched it, you waited. In a real team that is not sustainable — deployments happen dozens of times a day, from multiple people, across multiple environments. One missed step, one wrong image tag, one manual mistake is enough to break production.
+Every `kubectl apply` you ran in Kubernetes was a manual step. You typed it, you watched it, you waited. In a real team that is not sustainable — deployments happen dozens of times a day, from multiple people. One missed step, one wrong image tag, one manual mistake is enough to break production.
 
-CI-CD removes the human from the deployment loop. Code gets pushed, a pipeline runs, an image gets built and tagged, and the cluster updates itself — without anyone typing a single command.
+CI/CD removes the human from the deployment loop. Code gets pushed, a pipeline runs, an image gets built and tagged, and the cluster updates itself — without anyone typing a single command.
 
-GitHub Actions is the CI layer. It is built into the repo. No separate server. No extra billing. It triggers on the events you define — a push to main, a pull request, a tag — and runs whatever steps you tell it to. For this runbook it builds the webstore-api image, tags it with the git commit SHA, and pushes it to the registry.
+**GitHub Actions** is the CI layer. It is built into the GitHub repo — no separate server, no extra billing. It triggers on events you define, builds the ShopStack images, tags them with the git commit SHA, and pushes them to Docker Hub.
 
-ArgoCD is the CD layer. It watches a Git repository containing Kubernetes manifests. When the manifests change — because the CI pipeline updated the image tag — ArgoCD detects the difference between what is in Git and what is running in the cluster, and syncs them. The cluster always reflects what is in Git. That is GitOps.
+**ArgoCD** is the CD layer. It watches the `infra/k8s/` folder in the ShopStack repo. When a manifest changes — because the CI pipeline updated the image tag — ArgoCD detects the difference between what is in Git and what is running in the cluster, and syncs them. The cluster always reflects what is in Git. That is GitOps.
 
-Jenkins runs CI-CD too, but it requires a dedicated server, ongoing maintenance, and a plugin ecosystem that ages poorly. CircleCI and GitLab CI are solid tools but add separate accounts and ecosystems when the team is already on GitHub. Flux does GitOps like ArgoCD but has a smaller community and a steeper CLI learning curve. For a team on GitHub running Kubernetes, Actions + ArgoCD is the cleanest combination.
+**Why not Jenkins?** Jenkins requires a dedicated server, ongoing maintenance, and a plugin ecosystem that ages poorly. For a team already on GitHub running Kubernetes, Actions + ArgoCD is the cleanest combination with the least operational overhead.
 
 ---
 
 ## Prerequisites
 
-**Complete first:** [05. Kubernetes – Orchestration](../05.%20Kubernetes%20–%20Orchestration/README.md)
+**Complete first:** [05. Kubernetes — Orchestration](../05.%20Kubernetes%20–%20Orchestration/README.md)
 
-ArgoCD deploys to a Kubernetes cluster. GitHub Actions builds images that run in Kubernetes. If you do not have a working cluster and a deployed webstore, CI-CD has nothing to automate.
+ArgoCD deploys to a Kubernetes cluster. GitHub Actions builds images that run in Kubernetes. If you do not have ShopStack running on k3s on EC2, CI/CD has nothing to automate.
+
+**What you arrive with:**
+- ShopStack full stack running on k3s on AWS EC2
+- All six K8s manifests applied and verified (Deployments, Services, ConfigMaps, Secrets, PVC)
+- Images already on Docker Hub: `akhiltejadoosari/shopstack-api:1.0`, `shopstack-frontend:1.0`, `shopstack-worker:1.0`
+- Both repos on GitHub: `AkhilTejaDoosari/shopstack` (app + manifests) and `AkhilTejaDoosari/devops-journey` (tutorials)
 
 ---
 
-## The Running Example
+## The Running Example — ShopStack
 
-Every file and every lab is built around the webstore app.
+Every file and every lab is built around ShopStack.
 
-| Service | Image | Registry |
+| Service | Image | Role |
 |---|---|---|
-| webstore-api | custom image | Docker Hub (learning) → ECR (production) |
-| webstore-frontend | nginx:1.24 | Docker Hub |
-| webstore-db | postgres:15 | Docker Hub |
+| frontend | `akhiltejadoosari/shopstack-frontend` | Nginx — serves UI, proxies `/api/*` to api |
+| api | `akhiltejadoosari/shopstack-api` | FastAPI — business logic, talks to db |
+| worker | `akhiltejadoosari/shopstack-worker` | Go — background health pinger |
+| db | `postgres:15` | Postgres — all persistent data |
+
+The CI pipeline builds and pushes `api`, `frontend`, and `worker`. The `db` image is upstream — you don't build it.
 
 ---
 
-## Where You Take the Webstore
+## Where You Take ShopStack
 
-You arrive at CI-CD with the webstore running on a Kubernetes cluster. Deployments work. Pods self-heal. Storage persists. But every update requires you to manually build an image, push it, and apply the manifest.
+**You arrive:** ShopStack running on k3s. Deployments work. Pods self-heal. Storage persists. Every update requires you to manually build an image, push it, update the manifest, and run `kubectl apply`.
 
-You leave with a pipeline that does all of that automatically. Push code to main — the pipeline builds the image, tags it with the commit SHA, pushes it to the registry, updates the manifest, and ArgoCD deploys it to the cluster. The only manual step left is writing the code.
-
----
-
-## Why Two Repos
-
-This tool introduces the two-repo pattern. One repo holds your application code. A separate repo holds your Kubernetes manifests. The CI pipeline lives in the app repo and updates the manifest repo when a new image is built. ArgoCD watches the manifest repo.
-
-This separation means the cluster's desired state is always in Git, independent of the application code. Rolling back is a git revert on the manifest repo. Auditing who deployed what and when is a git log.
+**You leave:** Push code to main → pipeline builds the image → tags it with the commit SHA → pushes it to Docker Hub → updates the manifest in Git → ArgoCD detects the change → cluster syncs automatically. The only manual step left is writing the code.
 
 ---
 
-## Phases
+## The Two-Repo Pattern
 
-| # | Phase | Topics | Lab |
-|---|---|---|---|
-| 01 | [What is CI-CD](./01-what-is-cicd/README.md) | The problem with manual deployments, CI vs CD, the pipeline mental model | No lab |
-| 02 | [GitHub Actions](./02-github-actions/README.md) | Workflow file anatomy, triggers, jobs, steps, secrets, environment variables | [Lab 01](./cicd-labs/01-github-actions-lab.md) |
-| 03 | [Docker Build & Push](./03-docker-build-push/README.md) | `docker/build-push-action`, git SHA tagging, registry authentication in CI | [Lab 01](./cicd-labs/01-github-actions-lab.md) |
-| 04 | [ArgoCD](./04-argocd/README.md) | GitOps concept, install on Minikube, Application object, sync policies, health status | [Lab 02](./cicd-labs/02-argocd-lab.md) |
-| 05 | [Full Pipeline](./05-full-pipeline/README.md) | Connecting CI to CD — push triggers build, image tag updated, ArgoCD deploys | [Lab 03](./cicd-labs/03-full-pipeline-lab.md) |
+This module introduces the two-repo pattern you already have set up:
+
+| Repo | What lives here |
+|---|---|
+| `AkhilTejaDoosari/shopstack` | App source code + `infra/k8s/` manifests + Jenkinsfile + GitHub Actions workflows |
+| `AkhilTejaDoosari/devops-journey` | Tutorial files only — what you did, what every file does, how to repeat it |
+
+The CI pipeline lives in the `shopstack` repo and updates `infra/k8s/` manifests when a new image is built. ArgoCD watches `infra/k8s/`. Rolling back is a `git revert` on the manifest. Auditing who deployed what is a `git log`.
 
 ---
 
-## Labs
+## Files in This Module
 
-| Lab | Topics Covered | What You Practice |
+```
+06. CI-CD — Pipelines & GitOps/
+  ├── README.md                               ← you are here
+  ├── 01-ci-layer/
+  │   ├── 01-actions-fundamentals.md          ← runner model, workflow anatomy, secrets, SHA tagging
+  │   └── 02-production-patterns-gitops-bridge.md  ← path filters, bridge job, race condition fix
+  ├── 02-cd-layer/
+  │   ├── 00-lab-argocd-setup.md              ← install ArgoCD on k3s, expose UI, get credentials
+  │   └── 01-argocd-operations.md             ← Application manifest, sync status, drift, rollbacks
+  ├── 03-security-and-tools/
+  │   └── 01-trivy-container-scanning.md      ← CVE scanning, push:false, exit-code:1, fixing CVEs
+  └── 99-interview-prep/
+      └── README.md                           ← 20 questions across GHA + ArgoCD + Trivy
+```
+
+---
+
+## Read Order
+
+Read in this order. Each file builds on the previous.
+
+| # | File | What it covers |
 |---|---|---|
-| [Lab 01](./cicd-labs/01-github-actions-lab.md) | GitHub Actions + Docker Build & Push | Write the webstore-api pipeline from scratch, trigger it with a push, watch it build and push the image |
-| [Lab 02](./cicd-labs/02-argocd-lab.md) | ArgoCD | Install ArgoCD on Minikube, create the Application object, connect it to the manifests repo, trigger a sync |
-| [Lab 03](./cicd-labs/03-full-pipeline-lab.md) | Full Pipeline | Push a code change, watch the pipeline build and push the image, watch ArgoCD detect the change and deploy it |
+| 1 | `01-ci-layer/01-actions-fundamentals.md` | What a runner is, workflow file anatomy, secrets, SHA tagging |
+| 2 | `01-ci-layer/02-production-patterns-gitops-bridge.md` | Path filters, the bridge job that connects CI to CD, race condition fix |
+| 3 | `02-cd-layer/00-lab-argocd-setup.md` | Install ArgoCD on your k3s cluster, expose the UI, get the admin password |
+| 4 | `02-cd-layer/01-argocd-operations.md` | Application manifest, Synced vs Healthy, drift, rollback via Git |
+| 5 | `03-security-and-tools/01-trivy-container-scanning.md` | Container scanning, CVE severity, how to fix libexpat and Go stdlib CVEs |
+| 6 | `99-interview-prep/README.md` | 20 questions — answer out loud, no notes, 30 seconds each |
 
 ---
 
 ## What You Can Do After This
 
 - Write a GitHub Actions workflow from scratch without documentation
-- Build, tag, and push a Docker image from a CI pipeline
-- Explain the difference between CI and CD and why they are separate
+- Build, tag with a commit SHA, and push a Docker image from a CI pipeline
+- Explain the difference between CI and CD and why they are separate systems
+- Explain why `actions/checkout` is always the first step
 - Install and configure ArgoCD on a Kubernetes cluster
 - Explain GitOps and why Git is the source of truth for cluster state
-- Connect a CI pipeline to a CD system so deployments happen automatically
-- Roll back a deployment by reverting a commit in the manifests repo
-- Debug a failed pipeline run by reading GitHub Actions logs
-
----
-
-## How to Use This
-
-Read phases in order. Each one builds on the previous.
-After each phase do the lab before moving on.
-The checklist at the end of every lab is not optional.
+- Connect a CI pipeline to CD so deployments happen automatically via the bridge job
+- Roll back a deployment by reverting a commit — not with `kubectl rollout undo`
+- Debug a failed pipeline run by reading GitHub Actions step logs
+- Read a Trivy scan report and fix a CVE by updating a base image
 
 ---
 
 ## What Comes Next
 
-→ [07. Observability – Monitoring & Logs](../07.%20Observability%20–%20Monitoring%20%26%20Logs/README.md)
+→ [07. Observability — Monitoring & Logs](../07.%20Observability%20–%20Monitoring%20%26%20Logs/README.md)
 
-CI-CD deploys the webstore automatically. Observability tells you what is happening inside it after it is deployed — whether pods are healthy, whether requests are failing, and where to look when they are.
+CI/CD deploys ShopStack automatically. Observability tells you what is happening inside it after deployment — whether pods are healthy, whether requests are failing, and where to look when they are. ShopStack's API already exposes `/api/metrics` in Prometheus format. That is where the next module begins.

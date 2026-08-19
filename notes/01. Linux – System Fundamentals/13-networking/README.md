@@ -19,9 +19,9 @@
 
 # Linux Networking
 
-> **Layer:** L2 — Networking   
-> **Depends on:** [12 Service Management](../12-service-management/README.md) — you need running services before you have network traffic to debug   
-> **Used in production when:** nginx is running but not responding, the API cannot reach the database, a port that should be open is not, or you need to trace where a request is failing.  
+> **Layer:** L2 — Networking  
+> **Depends on:** [12 Service Management](../12-service-management/README.md) — you need running services before you have network traffic to debug  
+> **Used in production when:** nginx is running but not responding, the API cannot reach the database, a port that should be open is not, or you need to trace where a request is failing  
 
 ---
 

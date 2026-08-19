@@ -19,9 +19,9 @@
 
 # Working with Files
 
-> **Layer:** L5 — Tools & Files
-> **Depends on:** [02 Basics](../02-basics/README.md) — you need `ls`, `cd`, and `pwd` before working with files
-> **Used in production when:** Backing up a config before changing it, writing content into a file from the terminal, reading a log without opening an editor, creating the webstore directory structure
+> **Layer:** L5 — Tools & Files   
+> **Depends on:** [02 Basics](../02-basics/README.md) — you need `ls`, `cd`, and `pwd` before working with files   
+> **Used in production when:** Backing up a config before changing it, writing content into a file from the terminal, reading a log without opening an editor, creating the webstore directory structure   
 
 ---
 
@@ -32,7 +32,7 @@
 - [1. Create and Inspect Files](#1-create-and-inspect-files)
 - [2. Writing Content into Files](#2-writing-content-into-files)
 - [3. Copying Files — cp](#3-copying-files--cp)
-- [4. Moving and Renaming Files — mv](#4-moving-and-renaming-files--mv)
+- [4. Moving and Renaming Files — mv](#4-moving-and-renaming-files--m)v
 - [5. Deleting Files — rm](#5-deleting-files--rm)
 - [6. Viewing File Contents](#6-viewing-file-contents)
 - [7. Previewing File Sections — head and tail](#7-previewing-file-sections--head-and-tail)

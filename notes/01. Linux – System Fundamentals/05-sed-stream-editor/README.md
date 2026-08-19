@@ -19,9 +19,9 @@
 
 # sed — Stream Editor
 
-> **Layer:** L5 — Tools & Files
-> **Depends on:** [04 Filter Commands](../04-filter-commands/README.md) — you need grep and pipes before sed makes sense
-> **Used in production when:** A deploy script needs to update a config file without opening an editor — swap `env=production` to `env=staging`, update a port, strip comment lines before parsing
+> **Layer:** L5 — Tools & Files   
+> **Depends on:** [04 Filter Commands](../04-filter-commands/README.md) — you need grep and pipes before sed makes sense   
+> **Used in production when:** A deploy script needs to update a config file without opening an editor — swap `env=production` to `env=staging`, update a port, strip comment lines before parsing   
 
 ---
 

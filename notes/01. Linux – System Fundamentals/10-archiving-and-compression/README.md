@@ -19,9 +19,9 @@
 
 # Archiving and Compression
 
-> **Layer:** L5 — Tools & Files
-> **Depends on:** [03 Working with Files](../03-working-with-files/README.md) — you need cp and mv before you need tar
-> **Used in production when:** Backing up the webstore before a deploy, compressing old logs to free disk space, transferring the entire project to a new server in one file
+> **Layer:** L5 — Tools & Files   
+> **Depends on:** [03 Working with Files](../03-working-with-files/README.md) — you need cp and mv before you need tar   
+> **Used in production when:** Backing up the webstore before a deploy, compressing old logs to free disk space, transferring the entire project to a new server in one file   
 
 ---
 

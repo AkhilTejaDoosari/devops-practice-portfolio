@@ -19,9 +19,9 @@
 
 # vim — Terminal Text Editor
 
-> **Layer:** L5 — Tools & Files
-> **Depends on:** [02 Basics](../02-basics/README.md) — you need to navigate the filesystem before editing files on it
-> **Used in production when:** You SSH into a server and need to edit a config file — no GUI, no VS Code, just the terminal
+> **Layer:** L5 — Tools & Files   
+> **Depends on:** [02 Basics](../02-basics/README.md) — you need to navigate the filesystem before editing files on it   
+> **Used in production when:** You SSH into a server and need to edit a config file — no GUI, no VS Code, just the terminal   
 
 ---
 

@@ -19,9 +19,9 @@
 
 # User & Group Management
 
-> **Layer:** L4 — Config
-> **Depends on:** [02 Basics](../02-basics/README.md) — you need `whoami` and `id` before managing other users
-> **Used in production when:** Setting up a new server, adding a team member, creating a service account for nginx or docker, or auditing who has access to what
+> **Layer:** L4 — Config   
+> **Depends on:** [02 Basics](../02-basics/README.md) — you need `whoami` and `id` before managing other users   
+> **Used in production when:** Setting up a new server, adding a team member, creating a service account for nginx or docker, or auditing who has access to what   
 
 ---
 

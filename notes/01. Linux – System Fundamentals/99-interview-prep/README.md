@@ -19,8 +19,8 @@
 
 # Interview Prep — Linux
 
-> Read the notes files first. Come here the day before an interview.
-> Each answer is 30 seconds. No more. That is what interviewers want.
+> Read the notes files first. Come here the day before an interview.   
+> Each answer is 30 seconds. No more. That is what interviewers want.   
 
 ---
 

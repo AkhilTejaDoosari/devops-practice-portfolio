@@ -19,9 +19,9 @@
 
 # Logs & Debug
 
-> **Layer:** L3 — State & Debug
-> **Depends on:** [12 Service Management](../12-service-management/README.md) and [13 Networking](../13-networking/README.md) — logs only make sense once services are running and network is configured
-> **Used in production when:** Something broke. You SSH in at 2am. You need to find the cause using only the terminal.
+> **Layer:** L3 — State & Debug   
+> **Depends on:** [12 Service Management](../12-service-management/README.md) and [13 Networking](../13-networking/README.md) — logs only make sense once services are running and network is configured   
+> **Used in production when:** Something broke. You SSH in at 2am. You need to find the cause using only the terminal.   
 
 ---
 

@@ -19,9 +19,9 @@
 
 # awk — Text Processing
 
-> **Layer:** L5 — Tools & Files
-> **Depends on:** [05 sed](../05-sed-stream-editor/README.md) — you need pipes, grep, and field thinking before awk
-> **Used in production when:** You need to calculate totals from a log, build a report from raw text, or filter rows by the exact value of a specific field — things grep and cut cannot do alone
+> **Layer:** L5 — Tools & Files   
+> **Depends on:** [05 sed](../05-sed-stream-editor/README.md) — you need pipes, grep, and field thinking before awk.  
+> **Used in production when:** You need to calculate totals from a log, build a report from raw text, or filter rows by the exact value of a specific field — things grep and cut cannot do alone   
 
 ---
 

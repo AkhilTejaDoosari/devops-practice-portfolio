@@ -19,8 +19,8 @@
 
 # Linux Basics
 
-> **Layer:** L6 — You
-> **Depends on:** [01 Boot Process](../01-boot-process/README.md) — you should know what booted before you navigate it
+> **Layer:** L6 — You   
+> **Depends on:** [01 Boot Process](../01-boot-process/README.md) — you should know what booted before you navigate it   
 > **Used in production when:** You SSH into any server — familiar or not — and need to know where you are, what is running, and what the machine looks like before touching anything
 
 ---

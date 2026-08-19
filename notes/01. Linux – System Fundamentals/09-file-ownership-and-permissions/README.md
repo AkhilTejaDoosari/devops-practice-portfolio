@@ -19,9 +19,9 @@
 
 # File Ownership & Permissions
 
-> **Layer:** L4 — Config
-> **Depends on:** [08 Users & Groups](../08-user-and-group-management/README.md) — you need users and groups before you can assign ownership
-> **Used in production when:** nginx cannot read the webstore config, a deploy script cannot write to the logs directory, or you need to lock down files containing database passwords
+> **Layer:** L4 — Config   
+> **Depends on:** [08 Users & Groups](../08-user-and-group-management/README.md) — you need users and groups before you can assign ownership   
+> **Used in production when:** nginx cannot read the webstore config, a deploy script cannot write to the logs directory, or you need to lock down files containing database passwords   
 
 ---
 

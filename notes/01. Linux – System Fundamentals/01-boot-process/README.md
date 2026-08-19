@@ -19,8 +19,8 @@
 
 # Boot Process
 
-> **Layer:** L0 — Kernel & Hardware
-> **Depends on:** Nothing — this is the first file
+> **Layer:** L0 — Kernel & Hardware   
+> **Depends on:** Nothing this is the first file   
 > **Used in production when:** A server won't boot, you need to know which stage failed and where to look
 
 ---

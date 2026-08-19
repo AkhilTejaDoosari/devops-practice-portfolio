@@ -19,9 +19,9 @@
 
 # Service Management
 
-> **Layer:** L1 — Process Manager
-> **Depends on:** [11 Package Management](../11-package-management/README.md) — you need to install software before you can manage it as a service
-> **Used in production when:** Starting and stopping services, making a service survive reboots, applying a config change without dropping connections, or debugging why a service failed to start
+> **Layer:** L1 — Process Manager   
+> **Depends on:** [11 Package Management](../11-package-management/README.md) — you need to install software before you can manage it as a service   
+> **Used in production when:** Starting and stopping services, making a service survive reboots, applying a config change without dropping connections, or debugging why a service failed to start   
 
 ---
 

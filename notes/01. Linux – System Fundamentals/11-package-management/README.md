@@ -19,9 +19,9 @@
 
 # Package Management
 
-> **Layer:** L5 — Tools & Files
-> **Depends on:** [02 Basics](../02-basics/README.md) — you need basic navigation before installing software
-> **Used in production when:** Installing nginx, updating the server, removing a package cleanly, or auditing what is installed on an unfamiliar server
+> **Layer:** L5 — Tools & Files   
+> **Depends on:** [02 Basics](../02-basics/README.md) — you need basic navigation before installing software   
+> **Used in production when:** Installing nginx, updating the server, removing a package cleanly, or auditing what is installed on an unfamiliar server   
 
 ---
 

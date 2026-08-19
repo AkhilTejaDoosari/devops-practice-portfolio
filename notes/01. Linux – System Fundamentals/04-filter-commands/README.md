@@ -19,9 +19,9 @@
 
 # Filter Commands
 
-> **Layer:** L5 — Tools & Files
-> **Depends on:** [03 Working with Files](../03-working-with-files/README.md) — you need to be able to read and navigate files before filtering them
-> **Used in production when:** Something broke and you need to search thousands of log lines to find the one that matters — without opening a text editor
+> **Layer:** L5 — Tools & Files   
+> **Depends on:** [03 Working with Files](../03-working-with-files/README.md) — you need to be able to read and navigate files before filtering them   
+> **Used in production when:** Something broke and you need to search thousands of log lines to find the one that matters — without opening a text editor   
 
 ---
 
